@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap");
+$board-bg-color: #0079bf;
+$appbar-bg-color: #0067a3;
+$gap: 10px;
+$list-bg-color: #ebecf0;
+
+html {
+  cursor: pointer;
+}
+
+body {
+  cursor: default;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  font-family: "Source Sans Pro", sans-serif;
+  box-sizing: border-box;
+}
+
+.App {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 40px 50px 1fr;
+  line-height: 1.3em;
+  background-color: $board-bg-color;
+  .navbar {
+    padding-left: $gap;
+    &.app {
+      background-color: $appbar-bg-color;
+    }
+    &.board {
+      background-color: $board-bg-color;
+    }
+  }
+  .board-columns {
+    display: flex;
+    overflow-x: auto;
+    align-items: flex-start;
+    gap: 0 10px;
+    max-height: calc(100% - 1px);
+    color: #333;
+    margin-bottom: 10px;
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: darken($list-bg-color, 15);
+      border-radius: 5px;
+    }
+    &::-webkit-scrollbar:horizontal {
+      height: 11px;
+    }
+    .column {
+      background-color: $list-bg-color;
+      width: 300px;
+      padding: 10px;
+      border-radius: 5px;
+      &:first-child {
+        margin-left: 10px;
+      }
+      header {
+        font-size: 16px;
+      }
+      ul {
+        list-style: none;
+        padding-left: 0;
+        padding-right: 10px;
+        overflow-y: auto;
+        max-height: 530px;
+        &::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+        }
+
+        /* Track */
+        &::-webkit-scrollbar-track {
+          border-radius: 10px;
+          width: 5px;
+          height: 5px;
+        }
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+          background: #999999 !important;
+          border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: #d1d1d1 !important;
+          border: 1px solid #ebebeb !important;
+          cursor: pointer !important;
+        }
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+          background-color: #b30000;
+          cursor: pointer !important;
+        }
+        li {
+          background-color: white;
+          margin-bottom: 10px;
+          padding: 10px;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+          img {
+            display: block;
+          }
+        }
+      }
+      footer {
+        margin-left: 20px;
+        color: #5c5959;
+      }
+    }
+  }
+}
