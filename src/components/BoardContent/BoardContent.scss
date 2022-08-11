@@ -1,0 +1,21 @@
+@import "assets/variable.scss";
+
+.board-content {
+  display: flex;
+  overflow-x: auto;
+  align-items: flex-start;
+  gap: 0 10px;
+  max-height: calc(100% - 1px);
+  color: #333;
+  margin-bottom: 10px;
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: darken($list-bg-color, 15);
+    border-radius: 5px;
+  }
+  &::-webkit-scrollbar:horizontal {
+    height: 11px;
+  }
+}
