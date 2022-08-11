@@ -1,4 +1,5 @@
-import Task from "components/Task/Task";
+import CardItem from "components/CardItem/CardItem";
+import Task from "components/CardItem/CardItem";
 import React from "react";
 import "./CardColumn.scss";
 
@@ -13,28 +14,11 @@ const CardColumn = () => {
             alt=""
           />
         </li>
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
-        <Task />
+        <CardItem />
+        <CardItem />
+        <CardItem />
+        <CardItem />
+        <CardItem />
       </ul>
       <footer>Add another card</footer>
     </div>
