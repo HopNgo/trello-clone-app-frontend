@@ -1,8 +1,18 @@
+import ICard from "interface/ICard";
 import React from "react";
-import "./Task.scss";
+import "./CardItem.scss";
 
-const CardItem = () => {
-  return <li className="card-item">Clasmenemaoasdmsdmsmdsmdsmdsm</li>;
+interface CardItemProps {
+  card: ICard;
+}
+
+const CardItem: React.FC<CardItemProps> = ({ card }) => {
+  return (
+    <li className="card-item">
+      {card.cover && <img src={card.cover} />}
+      {card.title}
+    </li>
+  );
 };
 
 export default CardItem;
