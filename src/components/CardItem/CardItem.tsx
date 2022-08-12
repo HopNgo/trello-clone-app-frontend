@@ -9,7 +9,9 @@ interface CardItemProps {
 const CardItem: React.FC<CardItemProps> = ({ card }) => {
   return (
     <li className="card-item">
-      {card.cover && <img src={card.cover} />}
+      {card.cover && (
+        <img src={card.cover} onMouseDown={(e) => e.preventDefault()} />
+      )}
       {card.title}
     </li>
   );
