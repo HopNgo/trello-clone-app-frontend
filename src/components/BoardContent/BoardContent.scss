@@ -1,13 +1,8 @@
 @import "assets/variable.scss";
 
 .board-content {
-  display: flex;
-  overflow-x: auto;
-  align-items: flex-start;
-  gap: 0 10px;
-  max-height: calc(100% - 1px);
+  height: $board-content-height;
   color: #333;
-  margin-bottom: 10px;
   &::-webkit-scrollbar {
     -webkit-appearance: none;
   }
@@ -17,5 +12,10 @@
   }
   &::-webkit-scrollbar:horizontal {
     height: 11px;
+  }
+  .column-drop-preview {
+    background-color: rgba(150, 150, 200, 0.1);
+    border: 1px dashed #abc;
+    margin: 5px 45px 5px 5px;
   }
 }

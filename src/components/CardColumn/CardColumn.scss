@@ -8,8 +8,10 @@
   &:first-child {
     margin-left: 10px;
   }
-  header {
+  header.column-drag-handle {
     font-size: 16px;
+    cursor: pointer;
+    line-height: 25px;
   }
   ul.task-list {
     list-style: none;
@@ -43,6 +45,19 @@
     &::-webkit-scrollbar-thumb:hover {
       background-color: #b30000;
       cursor: pointer !important;
+    }
+    .card-ghost {
+      transition: transform 0.18s ease;
+      transform: rotateZ(5deg);
+    }
+    .card-ghost-drop {
+      transition: transform 0.18s ease-in-out;
+      transform: rotateZ(0deg);
+    }
+    .drop-preview {
+      background-color: rgba(150, 150, 200, 0.1);
+      border: 1px dashed #abc;
+      margin: 5px;
     }
   }
   footer {

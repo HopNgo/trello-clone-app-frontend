@@ -1,6 +1,7 @@
 @import "assets/variable.scss";
 
 .navbar-board {
+  height: $navbar-board-height;
   padding-left: $gap;
   background-color: $board-bg-color;
 }

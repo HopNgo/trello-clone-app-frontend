@@ -1,6 +1,7 @@
 @import "assets/variable.scss";
 
 .navbar-app {
+  height: $navbar-app-height;
   padding-left: $gap;
   background-color: $appbar-bg-color;
 }
