@@ -10,7 +10,11 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
   return (
     <li className="card-item">
       {card.cover && (
-        <img src={card.cover} onMouseDown={(e) => e.preventDefault()} />
+        <img
+          src={card.cover}
+          onMouseDown={(e) => e.preventDefault()}
+          alt="img-drop"
+        />
       )}
       {card.title}
     </li>

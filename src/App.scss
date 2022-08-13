@@ -15,6 +15,9 @@ body {
 }
 
 .App {
-
   background-color: $board-bg-color;
+  color: $main-text-color;
+  .icon {
+    font-size: 14px;
+  }
 }
