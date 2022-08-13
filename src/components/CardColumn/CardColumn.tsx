@@ -8,15 +8,11 @@ import { Container, Draggable } from "react-smooth-dnd";
 
 interface CardColumnProps {
   column: IColumn;
+  onCardDrop: Function;
 }
 
-const CardColumn: React.FC<CardColumnProps> = ({ column }) => {
-  console.log(column);
+const CardColumn: React.FC<CardColumnProps> = ({ column, onCardDrop }) => {
   const cards = mapOrder(column.cards, column.cardOrder, "id");
-
-  const onCardDrop = (CardResult: any) => {
-    console.log(CardResult);
-  };
 
   return (
     <div className="card-column">
@@ -24,7 +20,7 @@ const CardColumn: React.FC<CardColumnProps> = ({ column }) => {
       <ul className="task-list">
         <Container
           groupName="col"
-          onDrop={onCardDrop}
+          onDrop={(CardResult) => onCardDrop(CardResult, column.id)}
           getChildPayload={(index) => cards[index]}
           dragClass="card-ghost"
           dropClass="card-ghost-drop"
@@ -41,7 +37,11 @@ const CardColumn: React.FC<CardColumnProps> = ({ column }) => {
           ))}
         </Container>
       </ul>
-      <footer>Add another card</footer>
+      <footer>
+        <div className="footer-actions">
+          <i className="fa fa-plus icon"></i>Add another card
+        </div>
+      </footer>
     </div>
   );
 };

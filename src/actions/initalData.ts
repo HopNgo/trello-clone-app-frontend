@@ -130,7 +130,7 @@ const column3: IColumn = {
 
 const board: IBoard = {
   id: "board-1",
-  columnOrder: ["column-3", "column-2", "column-1"],
+  columnOrder: ["column-1", "column-2", "column-3"],
   columns: [column1, column2, column3],
 };
 
