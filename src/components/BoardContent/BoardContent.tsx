@@ -1,17 +1,22 @@
-import CardColumn from "components/CardColumn/CardColumn";
-import React, { useEffect, useState } from "react";
-import "./BoardContent.scss";
 import { initalData } from "actions/initalData";
+import { initialBoard } from "actions/initialBoard";
+import CardColumn from "components/CardColumn/CardColumn";
 import IBoard from "interface/IBoard";
 import IColumn from "interface/ICoLumn";
-import { mapOrder } from "utilities/sorts";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Form } from "react-bootstrap";
 import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag } from "utilities/dragDrop";
-import { initialBoard } from "actions/initialBoard";
+import { mapOrder } from "utilities/sorts";
+import "./BoardContent.scss";
 
 const BoardContent = () => {
   const [board, setBoard] = useState<IBoard>(initialBoard);
   const [columns, setColumns] = useState<IColumn[]>([]);
+  const [toggleFormAddNewColumn, setToggleFormAddNewColumn] =
+    useState<Boolean>(false);
+  const inputNewColumnRef = useRef<HTMLInputElement>(null);
+  const [newColumnTitle, setNewColumnTitle] = useState<string>();
 
   useEffect(() => {
     const boardFromDB = initalData.boards.find(
@@ -22,6 +27,13 @@ const BoardContent = () => {
       setColumns(mapOrder(boardFromDB.columns, boardFromDB.columnOrder, "id"));
     }
   }, []);
+
+  useEffect(() => {
+    if (inputNewColumnRef && inputNewColumnRef.current) {
+      inputNewColumnRef.current.focus();
+      inputNewColumnRef.current.select();
+    }
+  }, [toggleFormAddNewColumn]);
 
   const onColumnDrop = (DropResult: any) => {
     let newColumns: IColumn[] = [...columns];
@@ -45,6 +57,40 @@ const BoardContent = () => {
       setColumns(newColumns);
       console.log(board);
       console.log(columns);
+    }
+  };
+
+  const openFormAddNewColumn = () => {
+    setToggleFormAddNewColumn(true);
+  };
+
+  const closeFormAddNewColumn = () => {
+    setToggleFormAddNewColumn(false);
+  };
+
+  const addNewColumnTitle = () => {
+    if (!newColumnTitle) {
+      if (inputNewColumnRef && inputNewColumnRef.current) {
+        inputNewColumnRef.current.focus();
+      }
+    } else {
+      const newColumnDataAdded = {
+        id: Math.random().toString(36).substr(2, 5),
+        boardId: board.id,
+        cards: [],
+        cardOrder: [],
+        title: newColumnTitle.trim(),
+      };
+      let newColumns: IColumn[] = [...columns];
+      newColumns.push(newColumnDataAdded);
+
+      let newBoard = { ...board };
+      newBoard.columnOrder = newColumns.map((column) => column.id);
+      newBoard.columns = newColumns;
+      setColumns(newColumns);
+      setBoard(newBoard);
+      setToggleFormAddNewColumn(false);
+      setNewColumnTitle("");
     }
   };
 
@@ -73,9 +119,40 @@ const BoardContent = () => {
           </Draggable>
         ))}
       </Container>
-      <div className="add-new-column">
-        <i className="fa fa-plus"></i>Add another list
-      </div>
+      {toggleFormAddNewColumn ? (
+        <div className="form-add-new-column">
+          <div className="input">
+            <Form.Control
+              type="text"
+              size="sm"
+              placeholder="Enter list title..."
+              className="input-column"
+              ref={inputNewColumnRef}
+              value={newColumnTitle || ""}
+              onChange={(e) => setNewColumnTitle(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addNewColumnTitle()}
+            />
+          </div>
+          <div className="btn-and-cancel">
+            <Button
+              variant="primary"
+              size="sm"
+              className="btn"
+              onClick={addNewColumnTitle}
+            >
+              Add Column
+            </Button>
+            <i
+              className="fa fa-trash cancel"
+              onClick={closeFormAddNewColumn}
+            ></i>
+          </div>
+        </div>
+      ) : (
+        <div className="add-new-column" onClick={openFormAddNewColumn}>
+          <i className="fa fa-plus"></i>Add another list
+        </div>
+      )}
     </div>
   );
 };
