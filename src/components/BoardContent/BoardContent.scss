@@ -24,6 +24,7 @@
     padding: 10px 40px 10px 10px;
     border-radius: 5px;
     width: 250px;
+    min-width: 250px;
     color: white;
     font-size: 15px;
     background-color: hsla(0, 0%, 100%, 0.24);
@@ -33,6 +34,27 @@
     }
     i {
       margin-right: 10px;
+    }
+  }
+  .form-add-new-column {
+    width: 250px;
+    background-color: $list-bg-color;
+    padding: 10px 10px;
+    border-radius: 5px;
+    .input-column {
+      line-height: 28px;
+    }
+  }
+  .btn-and-cancel {
+    margin-top: 10px;
+    .cancel {
+      font-size: 18px;
+      margin-left: 15px;
+      color: $color-danger;
+      &:hover {
+        cursor: pointer;
+        color: darken($color-danger, 10);
+      }
     }
   }
 }
