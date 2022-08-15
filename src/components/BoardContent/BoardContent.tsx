@@ -2,13 +2,17 @@ import { initalData } from "actions/initalData";
 import { initialBoard } from "actions/initialBoard";
 import CardColumn from "components/CardColumn/CardColumn";
 import IBoard from "interface/IBoard";
-import IColumn from "interface/ICoLumn";
+import IColumn from "../../interface/IColumn";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag } from "utilities/dragDrop";
 import { mapOrder } from "utilities/sorts";
 import "./BoardContent.scss";
+
+interface IColumnUpdate extends IColumn {
+  _destroy?: Boolean;
+}
 
 const BoardContent = () => {
   const [board, setBoard] = useState<IBoard>(initialBoard);
@@ -94,6 +98,25 @@ const BoardContent = () => {
     }
   };
 
+  const onUpdateColumn = (newColumn: IColumnUpdate) => {
+    const columnIdToUpdate = newColumn.id;
+    let newColumns = [...columns];
+    const columnIndexToUpdate = newColumns.findIndex(
+      (column) => column.id === columnIdToUpdate
+    );
+    if (newColumn._destroy) {
+      newColumns.splice(columnIndexToUpdate, 1);
+    } else {
+      if (columnIndexToUpdate) {
+        newColumns.splice(columnIndexToUpdate, 1, newColumn);
+      }
+    }
+    let newBoard = { ...board };
+    newBoard.columnOrder = newColumns.map((column) => column.id);
+    newBoard.columns = newColumns;
+    setColumns(newColumns);
+    setBoard(newBoard);
+  };
   if (board === undefined) {
     return <div className="">Board Not found</div>;
   }
@@ -115,7 +138,11 @@ const BoardContent = () => {
       >
         {columns.map((column: IColumn) => (
           <Draggable key={column.id}>
-            <CardColumn column={column} onCardDrop={onCardDrop} />
+            <CardColumn
+              column={column}
+              onCardDrop={onCardDrop}
+              onUpdateColumn={onUpdateColumn}
+            />
           </Draggable>
         ))}
       </Container>

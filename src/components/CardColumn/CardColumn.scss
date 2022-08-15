@@ -1,7 +1,7 @@
 @import "assets/variable.scss";
 
 .card-column {
-  background-color: $list-bg-color;
+  background-color: $column-bg-color;
   width: 270px;
   padding: 10px;
   border-radius: 5px;
@@ -9,9 +9,54 @@
     margin-left: 10px;
   }
   header.column-drag-handle {
-    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
     cursor: pointer;
-    line-height: 25px;
+    margin-bottom: 10px;
+    .column-title {
+      &-editable {
+        line-height: 25px;
+        font-size: 16px;
+        background-color: inherit;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        &:focus {
+          box-shadow: none;
+          border: 1px solid $border-input-color;
+          background-color: white;
+        }
+      }
+    }
+    .column-dropdown {
+      button.dropdown-btn-action {
+        background-color: $column-bg-color;
+        border: none;
+        color: $main-text-color;
+        padding: 0 10px;
+        letter-spacing: 1px;
+        font-size: 16px;
+        font-weight: bold;
+        &:hover {
+          background-color: darken($column-bg-color, 10);
+        }
+        &::after {
+          content: "...";
+          border: none;
+        }
+      }
+    }
+    .dropdown-menu {
+      min-width: 200px;
+      padding: 0;
+      .dropdown-item {
+        font-size: 14px;
+        padding: 10px;
+        &:not(:last-child) {
+          border-bottom: 1px solid darken($column-bg-color, 10);
+        }
+      }
+    }
   }
   ul.task-list {
     list-style: none;

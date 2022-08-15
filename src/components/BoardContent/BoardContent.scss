@@ -9,7 +9,7 @@
     -webkit-appearance: none;
   }
   &::-webkit-scrollbar-thumb {
-    background-color: darken($list-bg-color, 15);
+    background-color: darken($column-bg-color, 15);
     border-radius: 5px;
   }
   &::-webkit-scrollbar:horizontal {
@@ -38,11 +38,14 @@
   }
   .form-add-new-column {
     width: 250px;
-    background-color: $list-bg-color;
+    background-color: $column-bg-color;
     padding: 10px 10px;
     border-radius: 5px;
     .input-column {
       line-height: 28px;
+      &:focus {
+        border: 1px solid $border-input-color;
+      }
     }
   }
   .btn-and-cancel {
