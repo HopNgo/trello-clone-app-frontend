@@ -151,7 +151,9 @@ const CardColumn: React.FC<CardColumnProps> = ({
               className="dropdown-btn-action"
             ></Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Add Card...</Dropdown.Item>
+              <Dropdown.Item onClick={() => setToggleAddNewCard(true)}>
+                Add Card...
+              </Dropdown.Item>
               <Dropdown.Item
                 onClick={() => onConfirmModalAction(MODAL_ACTION_OPEN)}
               >
