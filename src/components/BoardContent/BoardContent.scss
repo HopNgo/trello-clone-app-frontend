@@ -5,12 +5,15 @@
   display: flex;
   align-items: flex-start;
   gap: 0 20px;
+  overflow-y: auto;
   &::-webkit-scrollbar {
     -webkit-appearance: none;
   }
   &::-webkit-scrollbar-thumb {
+    cursor: pointer;
     background-color: darken($column-bg-color, 15);
     border-radius: 5px;
+    margin-bottom: 5px;
   }
   &::-webkit-scrollbar:horizontal {
     height: 11px;
@@ -25,6 +28,7 @@
     border-radius: 5px;
     width: 250px;
     min-width: 250px;
+    margin-right: 20px;
     color: white;
     font-size: 15px;
     background-color: hsla(0, 0%, 100%, 0.24);
@@ -38,6 +42,8 @@
   }
   .form-add-new-column {
     width: 250px;
+    min-width: 250px;
+    margin-right: 20px;
     background-color: $column-bg-color;
     padding: 10px 10px;
     border-radius: 5px;
@@ -47,16 +53,16 @@
         border: 1px solid $border-input-color;
       }
     }
-  }
-  .btn-and-cancel {
-    margin-top: 10px;
-    .cancel {
-      font-size: 18px;
-      margin-left: 15px;
-      color: $color-danger;
-      &:hover {
-        cursor: pointer;
-        color: darken($color-danger, 10);
+    .btn-and-cancel {
+      margin-top: 10px;
+      .cancel {
+        font-size: 18px;
+        margin-left: 15px;
+        color: $color-danger;
+        &:hover {
+          cursor: pointer;
+          color: darken($color-danger, 10);
+        }
       }
     }
   }
