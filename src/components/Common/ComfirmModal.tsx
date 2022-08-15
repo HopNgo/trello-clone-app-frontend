@@ -23,11 +23,8 @@ function ConfirmModal({ title, content, show, onAction }: any) {
         >
           Close
         </Button>
-        <Button
-          variant="primary"
-          onClick={() => onAction(MODAL_ACTION_CONFIRM)}
-        >
-          Save Changes
+        <Button variant="danger" onClick={() => onAction(MODAL_ACTION_CONFIRM)}>
+          Remove
         </Button>
       </Modal.Footer>
     </Modal>

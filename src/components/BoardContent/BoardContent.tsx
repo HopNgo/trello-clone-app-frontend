@@ -22,6 +22,11 @@ const BoardContent = () => {
   const inputNewColumnRef = useRef<HTMLInputElement>(null);
   const [newColumnTitle, setNewColumnTitle] = useState<string>();
 
+  console.log(columns, board);
+
+  const addNewColumnRef: React.RefObject<HTMLDivElement> =
+    useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const boardFromDB = initalData.boards.find(
       (board: IBoard) => (board.id = "board-1")
@@ -36,6 +41,12 @@ const BoardContent = () => {
     if (inputNewColumnRef && inputNewColumnRef.current) {
       inputNewColumnRef.current.focus();
       inputNewColumnRef.current.select();
+    }
+    if (addNewColumnRef && addNewColumnRef.current) {
+      addNewColumnRef.current.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+      });
     }
   }, [toggleFormAddNewColumn]);
 
@@ -117,6 +128,7 @@ const BoardContent = () => {
     setColumns(newColumns);
     setBoard(newBoard);
   };
+  
   if (board === undefined) {
     return <div className="">Board Not found</div>;
   }
@@ -142,6 +154,10 @@ const BoardContent = () => {
               column={column}
               onCardDrop={onCardDrop}
               onUpdateColumn={onUpdateColumn}
+              setColumns={setColumns}
+              setBoard={setBoard}
+              board={board}
+              columns={columns}
             />
           </Draggable>
         ))}
@@ -152,7 +168,7 @@ const BoardContent = () => {
             <Form.Control
               type="text"
               size="sm"
-              placeholder="Enter list title..."
+              placeholder="Enter title column..."
               className="input-column"
               ref={inputNewColumnRef}
               value={newColumnTitle || ""}
@@ -176,7 +192,11 @@ const BoardContent = () => {
           </div>
         </div>
       ) : (
-        <div className="add-new-column" onClick={openFormAddNewColumn}>
+        <div
+          className="add-new-column"
+          onClick={openFormAddNewColumn}
+          ref={addNewColumnRef}
+        >
           <i className="fa fa-plus"></i>Add another list
         </div>
       )}

@@ -2,8 +2,8 @@ import CardItem from "components/CardItem/CardItem";
 import ConfirmModal from "components/Common/ComfirmModal";
 import ICard from "interface/ICard";
 import IColumn from "../../interface/IColumn";
-import React, { useState } from "react";
-import { Dropdown, Form } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Dropdown, Form } from "react-bootstrap";
 import { Container, Draggable } from "react-smooth-dnd";
 import {
   MODAL_ACTION_CLOSE,
@@ -12,22 +12,53 @@ import {
 } from "utilities/constants";
 import { mapOrder } from "utilities/sorts";
 import "./CardColumn.scss";
+import { cloneDeep } from "lodash";
+import IBoard from "interface/IBoard";
 
 interface CardColumnProps {
   column: IColumn;
   onCardDrop: Function;
   onUpdateColumn: Function;
+  setColumns: Function;
+  setBoard: Function;
+  columns: IColumn[];
+  board: IBoard;
 }
 
 const CardColumn: React.FC<CardColumnProps> = ({
   column,
   onCardDrop,
   onUpdateColumn,
+  setColumns,
+  setBoard,
+  columns,
+  board,
 }) => {
   const cards = mapOrder(column.cards, column.cardOrder, "id");
+
   const [toggleModalRemoveColumn, setToggleModalRemoveColumn] =
     useState<Boolean>(false);
+
   const [editColumnTitle, setEditColumnTitle] = useState<string>(column.title);
+
+  const [toggleAddNewCard, setToggleAddNewCard] = useState<Boolean>(false);
+
+  const textareaAddCardRef = useRef<HTMLTextAreaElement>(null);
+
+  const [newCardTitle, setNewCardTitle] = useState<string>("");
+
+  const formAddNewCardRef: React.RefObject<HTMLDivElement> =
+    useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    textareaAddCardRef?.current?.focus();
+    textareaAddCardRef?.current?.select();
+
+    formAddNewCardRef?.current?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+    });
+  }, [toggleAddNewCard]);
 
   const onConfirmModalAction = (actionType: string) => {
     if (actionType === MODAL_ACTION_CLOSE) {
@@ -57,6 +88,41 @@ const CardColumn: React.FC<CardColumnProps> = ({
   const handleSaveTitleColumnAfterBlur = () => {
     const newColumn = { ...column, title: editColumnTitle };
     onUpdateColumn(newColumn);
+  };
+
+  const handleAddNewCard = () => {
+    if (!newCardTitle) {
+      textareaAddCardRef?.current?.focus();
+      return;
+    } else {
+      const newCardDataAdded: ICard = {
+        id: Math.random().toString(36).substr(2, 5),
+        boardId: column.boardId,
+        title: newCardTitle.trim(),
+        columnId: column.id,
+        cover: null,
+      };
+      console.log(newCardDataAdded);
+
+      let newColumn = cloneDeep(column);
+      newColumn.cards.push(newCardDataAdded);
+      newColumn.cardOrder.push(newCardDataAdded.id);
+
+      let newColumns = [...columns];
+      const indexColumnToAddCard = newColumns.findIndex(
+        (col) => col.id === newColumn.id
+      );
+      newColumns.splice(indexColumnToAddCard, 1, newColumn);
+      setColumns(newColumns);
+
+      let newBoard = { ...board };
+      newBoard.columnOrder = newColumns.map((column) => column.id);
+      newBoard.columns = newColumns;
+      setBoard(newBoard);
+
+      setNewCardTitle("");
+      setToggleAddNewCard(false);
+    }
   };
 
   return (
@@ -120,12 +186,49 @@ const CardColumn: React.FC<CardColumnProps> = ({
             </Draggable>
           ))}
         </Container>
+        {toggleAddNewCard && (
+          <div className="form-add-new-card" ref={formAddNewCardRef}>
+            <div className="input">
+              <Form.Control
+                ref={textareaAddCardRef}
+                rows={3}
+                as="textarea"
+                size="sm"
+                placeholder="Enter title card ..."
+                className="textarea-card"
+                value={newCardTitle}
+                onChange={(e) => setNewCardTitle(e.target.value)}
+              />
+            </div>
+            <div className="btn-and-cancel">
+              <Button
+                variant="primary"
+                size="sm"
+                className="btn"
+                onClick={handleAddNewCard}
+              >
+                Add Card
+              </Button>
+              <i
+                className="fa fa-trash cancel"
+                onClick={() => setToggleAddNewCard(false)}
+              ></i>
+            </div>
+          </div>
+        )}
       </ul>
-      <footer>
-        <div className="footer-actions">
-          <i className="fa fa-plus icon"></i>Add another card
-        </div>
-      </footer>
+      {!toggleAddNewCard && (
+        <footer>
+          <div
+            className="footer-actions "
+            onClick={() => setToggleAddNewCard(true)}
+          >
+            <i className="fa fa-plus icon"></i>
+            Add another card
+          </div>
+        </footer>
+      )}
+
       <ConfirmModal
         show={toggleModalRemoveColumn}
         onAction={onConfirmModalAction}
