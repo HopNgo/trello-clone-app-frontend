@@ -1,6 +1,6 @@
 import IBoard from "interface/IBoard";
 import ICard from "interface/ICard";
-import IColumn from "interface/ICoLumn";
+import IColumn from "interface/IColumn";
 
 const card1: ICard = {
   id: "card-1",
