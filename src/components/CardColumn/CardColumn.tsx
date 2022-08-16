@@ -125,6 +125,27 @@ const CardColumn: React.FC<CardColumnProps> = ({
     }
   };
 
+  const handleClickRemoveAllCard = () => {
+    let newColumn = { ...column };
+    newColumn.cards = [];
+    newColumn.cardOrder = [];
+
+    let newColumns = [...columns];
+    const indexColumnsToRemove = newColumns.findIndex(
+      (column) => column.id === newColumn.id
+    );
+
+    if (indexColumnsToRemove || indexColumnsToRemove === 0) {
+      newColumns.splice(indexColumnsToRemove, 1, newColumn);
+    }
+    setColumns(newColumns);
+
+    let newBoard = { ...board };
+    newBoard.columnOrder = newColumns.map((column) => column.id);
+    newBoard.columns = newColumns;
+    setBoard(newBoard);
+  };
+
   return (
     <div className="card-column">
       <header className="column-drag-handle">
@@ -159,7 +180,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
               >
                 Remove Column...
               </Dropdown.Item>
-              <Dropdown.Item href="#/action-3">
+              <Dropdown.Item onClick={handleClickRemoveAllCard}>
                 Move all cards in this column (beta)
               </Dropdown.Item>
               <Dropdown.Item href="#/action-3">
