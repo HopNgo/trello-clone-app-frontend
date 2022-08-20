@@ -1,5 +1,5 @@
 export default interface ICard{
-    id: string
+    _id: string
     boardId: string
     columnId: string
     title: string

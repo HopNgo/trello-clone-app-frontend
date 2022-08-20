@@ -1,3 +1,6 @@
-export const MODAL_ACTION_CLOSE = "MODAL_ACTION_CLOSE";
-export const MODAL_ACTION_OPEN = "MODAL_ACTION_OPEN";
-export const MODAL_ACTION_CONFIRM = "MODAL_ACTION_CONFIRM";
+export const MODAL_ACTION_CLOSE: string = "MODAL_ACTION_CLOSE";
+export const MODAL_ACTION_OPEN: string = "MODAL_ACTION_OPEN";
+export const MODAL_ACTION_CONFIRM: string = "MODAL_ACTION_CONFIRM";
+
+
+export const API_ROOT: string = 'http://localhost:5000';
