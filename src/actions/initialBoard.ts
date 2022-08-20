@@ -1,17 +1,17 @@
 import IBoard from "interface/IBoard";
 
 export const initialBoard: IBoard = {
-  id: "",
+  _id: "",
   columnOrder: [""],
   columns: [
     {
-      id: "",
+      _id: "",
       boardId: "",
       title: "",
       cardOrder: [""],
       cards: [
         {
-          id: "",
+          _id: "",
           boardId: "",
           columnId: "",
           title: "",

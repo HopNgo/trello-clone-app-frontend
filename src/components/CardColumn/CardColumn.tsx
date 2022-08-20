@@ -34,7 +34,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
   columns,
   board,
 }) => {
-  const cards = mapOrder(column.cards, column.cardOrder, "id");
+  const cards = mapOrder(column.cards, column.cardOrder, "_id");
 
   const [toggleModalRemoveColumn, setToggleModalRemoveColumn] =
     useState<Boolean>(false);
@@ -96,27 +96,27 @@ const CardColumn: React.FC<CardColumnProps> = ({
       return;
     } else {
       const newCardDataAdded: ICard = {
-        id: Math.random().toString(36).substr(2, 5),
+        _id: Math.random().toString(36).substr(2, 5),
         boardId: column.boardId,
         title: newCardTitle.trim(),
-        columnId: column.id,
+        columnId: column._id,
         cover: null,
       };
       console.log(newCardDataAdded);
 
       let newColumn = cloneDeep(column);
       newColumn.cards.push(newCardDataAdded);
-      newColumn.cardOrder.push(newCardDataAdded.id);
+      newColumn.cardOrder.push(newCardDataAdded._id);
 
       let newColumns = [...columns];
       const indexColumnToAddCard = newColumns.findIndex(
-        (col) => col.id === newColumn.id
+        (col) => col._id === newColumn._id
       );
       newColumns.splice(indexColumnToAddCard, 1, newColumn);
       setColumns(newColumns);
 
       let newBoard = { ...board };
-      newBoard.columnOrder = newColumns.map((column) => column.id);
+      newBoard.columnOrder = newColumns.map((column) => column._id);
       newBoard.columns = newColumns;
       setBoard(newBoard);
 
@@ -132,7 +132,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
 
     let newColumns = [...columns];
     const indexColumnsToRemove = newColumns.findIndex(
-      (column) => column.id === newColumn.id
+      (column) => column._id === newColumn._id
     );
 
     if (indexColumnsToRemove || indexColumnsToRemove === 0) {
@@ -141,7 +141,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
     setColumns(newColumns);
 
     let newBoard = { ...board };
-    newBoard.columnOrder = newColumns.map((column) => column.id);
+    newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
     setBoard(newBoard);
   };
@@ -193,7 +193,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
       <ul className="task-list">
         <Container
           groupName="col"
-          onDrop={(CardResult) => onCardDrop(CardResult, column.id)}
+          onDrop={(CardResult) => onCardDrop(CardResult, column._id)}
           getChildPayload={(index) => cards[index]}
           dragClass="card-ghost"
           dropClass="card-ghost-drop"
@@ -204,7 +204,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
           }}
         >
           {cards.map((card: ICard) => (
-            <Draggable key={card.id}>
+            <Draggable key={card._id}>
               <CardItem card={card} />
             </Draggable>
           ))}

@@ -1,4 +1,3 @@
-import { initalData } from "actions/initalData";
 import { initialBoard } from "actions/initialBoard";
 import CardColumn from "components/CardColumn/CardColumn";
 import IBoard from "interface/IBoard";
@@ -9,6 +8,7 @@ import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag } from "utilities/dragDrop";
 import { mapOrder } from "utilities/sorts";
 import "./BoardContent.scss";
+import { getBoardDetailApi } from "api";
 
 interface IColumnUpdate extends IColumn {
   _destroy?: Boolean;
@@ -28,14 +28,16 @@ const BoardContent = () => {
     useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const boardFromDB = initalData.boards.find(
-      (board: IBoard) => (board.id = "board-1")
-    );
-    if (boardFromDB) {
-      setBoard(boardFromDB);
-      setColumns(mapOrder(boardFromDB.columns, boardFromDB.columnOrder, "id"));
-    }
+    const boardId = "62fdec3023029563b79aab17";
+    getBoardDetailApi(boardId).then((board: IBoard) => {
+      setBoard(board);
+      setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
+    });
   }, []);
+
+  useEffect(() => {
+    setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
+  }, [board]);
 
   useEffect(() => {
     if (inputNewColumnRef && inputNewColumnRef.current) {
@@ -55,19 +57,19 @@ const BoardContent = () => {
     newColumns = applyDrag(newColumns, DropResult);
 
     let newBoard = { ...board };
-    newBoard.columnOrder = newColumns.map((column) => column.id);
+    newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
     setColumns(newColumns);
     setBoard(newBoard);
   };
 
-  const onCardDrop = (CardResult: any, columnId: string) => {
+  const onCardDrop = (CardResult: any, column_Id: string) => {
     if (CardResult.removedIndex !== null || CardResult.addedIndex !== null) {
       let newColumns = [...columns];
-      let currentColumn = newColumns.find((column) => column.id === columnId);
+      let currentColumn = newColumns.find((column) => column._id === column_Id);
       if (currentColumn) {
         currentColumn.cards = applyDrag(currentColumn?.cards, CardResult);
-        currentColumn.cardOrder = currentColumn.cards.map((card) => card.id);
+        currentColumn.cardOrder = currentColumn.cards.map((card) => card._id);
       }
       setColumns(newColumns);
       console.log(board);
@@ -90,8 +92,8 @@ const BoardContent = () => {
       }
     } else {
       const newColumnDataAdded = {
-        id: Math.random().toString(36).substr(2, 5),
-        boardId: board.id,
+        _id: Math.random().toString(36).substr(2, 5),
+        boardId: board._id,
         cards: [],
         cardOrder: [],
         title: newColumnTitle.trim(),
@@ -100,7 +102,7 @@ const BoardContent = () => {
       newColumns.push(newColumnDataAdded);
 
       let newBoard = { ...board };
-      newBoard.columnOrder = newColumns.map((column) => column.id);
+      newBoard.columnOrder = newColumns.map((column) => column._id);
       newBoard.columns = newColumns;
       setColumns(newColumns);
       setBoard(newBoard);
@@ -110,10 +112,10 @@ const BoardContent = () => {
   };
 
   const onUpdateColumn = (newColumn: IColumnUpdate) => {
-    const columnIdToUpdate = newColumn.id;
+    const columnIdToUpdate = newColumn._id;
     let newColumns = [...columns];
     const columnIndexToUpdate = newColumns.findIndex(
-      (column) => column.id === columnIdToUpdate
+      (column) => column._id === columnIdToUpdate
     );
     if (newColumn._destroy) {
       newColumns.splice(columnIndexToUpdate, 1);
@@ -123,12 +125,12 @@ const BoardContent = () => {
       }
     }
     let newBoard = { ...board };
-    newBoard.columnOrder = newColumns.map((column) => column.id);
+    newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
     setColumns(newColumns);
     setBoard(newBoard);
   };
-  
+
   if (board === undefined) {
     return <div className="">Board Not found</div>;
   }
@@ -149,7 +151,7 @@ const BoardContent = () => {
         }}
       >
         {columns.map((column: IColumn) => (
-          <Draggable key={column.id}>
+          <Draggable key={column._id}>
             <CardColumn
               column={column}
               onCardDrop={onCardDrop}
