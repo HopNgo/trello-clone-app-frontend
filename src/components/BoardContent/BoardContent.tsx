@@ -1,14 +1,15 @@
 import { initialBoard } from "actions/initialBoard";
 import CardColumn from "components/CardColumn/CardColumn";
 import IBoard from "interface/IBoard";
-import IColumn from "../../interface/IColumn";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag } from "utilities/dragDrop";
 import { mapOrder } from "utilities/sorts";
 import "./BoardContent.scss";
-import { getBoardDetailApi } from "api";
+import IColumn from "interface/ICoLumn";
+import { createColumnApi } from "api/columnApi";
+import { getBoardDetailApi } from "api/boardApi";
 
 interface IColumnUpdate extends IColumn {
   _destroy?: Boolean;
@@ -34,10 +35,6 @@ const BoardContent = () => {
       setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
     });
   }, []);
-
-  useEffect(() => {
-    setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
-  }, [board]);
 
   useEffect(() => {
     if (inputNewColumnRef && inputNewColumnRef.current) {
@@ -92,22 +89,20 @@ const BoardContent = () => {
       }
     } else {
       const newColumnDataAdded = {
-        _id: Math.random().toString(36).substr(2, 5),
         boardId: board._id,
-        cards: [],
-        cardOrder: [],
         title: newColumnTitle.trim(),
       };
-      let newColumns: IColumn[] = [...columns];
-      newColumns.push(newColumnDataAdded);
-
-      let newBoard = { ...board };
-      newBoard.columnOrder = newColumns.map((column) => column._id);
-      newBoard.columns = newColumns;
-      setColumns(newColumns);
-      setBoard(newBoard);
-      setToggleFormAddNewColumn(false);
-      setNewColumnTitle("");
+      createColumnApi(newColumnDataAdded).then((column: IColumn) => {
+        let newColumns: IColumn[] = [...columns];
+        newColumns.push(column);
+        let newBoard = { ...board };
+        newBoard.columnOrder = newColumns.map((column: IColumn) => column._id);
+        newBoard.columns = newColumns;
+        setColumns(newColumns);
+        setBoard(newBoard);
+        setToggleFormAddNewColumn(false);
+        setNewColumnTitle("");
+      });
     }
   };
 
@@ -199,7 +194,7 @@ const BoardContent = () => {
           onClick={openFormAddNewColumn}
           ref={addNewColumnRef}
         >
-          <i className="fa fa-plus"></i>Add another list
+          <i className="fa fa-plus"></i>Add Another Column
         </div>
       )}
     </div>

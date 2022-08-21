@@ -3,6 +3,7 @@ import IBoard from "interface/IBoard";
 export const initialBoard: IBoard = {
   _id: "",
   columnOrder: [""],
+  title: "",
   columns: [
     {
       _id: "",

@@ -1,7 +1,11 @@
+import { createCardApi } from "api/cardApi";
+import { deleteColumnApi, updateColumnApi } from "api/columnApi";
 import CardItem from "components/CardItem/CardItem";
 import ConfirmModal from "components/Common/ComfirmModal";
+import IBoard from "interface/IBoard";
 import ICard from "interface/ICard";
-import IColumn from "../../interface/IColumn";
+import IColumn from "interface/ICoLumn";
+import { cloneDeep } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Dropdown, Form } from "react-bootstrap";
 import { Container, Draggable } from "react-smooth-dnd";
@@ -12,8 +16,6 @@ import {
 } from "utilities/constants";
 import { mapOrder } from "utilities/sorts";
 import "./CardColumn.scss";
-import { cloneDeep } from "lodash";
-import IBoard from "interface/IBoard";
 
 interface CardColumnProps {
   column: IColumn;
@@ -34,7 +36,9 @@ const CardColumn: React.FC<CardColumnProps> = ({
   columns,
   board,
 }) => {
-  const cards = mapOrder(column.cards, column.cardOrder, "_id");
+  const cards = column.cards
+    ? mapOrder(column.cards, column.cardOrder, "_id")
+    : [];
 
   const [toggleModalRemoveColumn, setToggleModalRemoveColumn] =
     useState<Boolean>(false);
@@ -68,8 +72,10 @@ const CardColumn: React.FC<CardColumnProps> = ({
       setToggleModalRemoveColumn(true);
     }
     if (actionType === MODAL_ACTION_CONFIRM) {
-      const newColumn = { ...column, _destroy: true };
-      onUpdateColumn(newColumn);
+      deleteColumnApi(column._id).then((deletedColumn) => {
+        onUpdateColumn(deletedColumn);
+      });
+      setToggleModalRemoveColumn(false);
     }
   };
 
@@ -87,7 +93,12 @@ const CardColumn: React.FC<CardColumnProps> = ({
 
   const handleSaveTitleColumnAfterBlur = () => {
     const newColumn = { ...column, title: editColumnTitle };
-    onUpdateColumn(newColumn);
+    if (column.title !== newColumn.title) {
+      updateColumnApi(newColumn._id, newColumn).then((updatedColumn) => {
+        console.log(updatedColumn);
+        onUpdateColumn(updatedColumn);
+      });
+    }
   };
 
   const handleAddNewCard = () => {
@@ -95,33 +106,36 @@ const CardColumn: React.FC<CardColumnProps> = ({
       textareaAddCardRef?.current?.focus();
       return;
     } else {
-      const newCardDataAdded: ICard = {
-        _id: Math.random().toString(36).substr(2, 5),
+      const newCardDataAdded: {
+        boardId: string;
+        title: string;
+        columnId: string;
+        cover?: string;
+      } = {
         boardId: column.boardId,
         title: newCardTitle.trim(),
         columnId: column._id,
-        cover: null,
       };
-      console.log(newCardDataAdded);
+      createCardApi(newCardDataAdded).then((card: ICard) => {
+        let newColumn = cloneDeep(column);
+        newColumn.cards.push(card);
+        newColumn.cardOrder.push(card._id);
 
-      let newColumn = cloneDeep(column);
-      newColumn.cards.push(newCardDataAdded);
-      newColumn.cardOrder.push(newCardDataAdded._id);
+        let newColumns = [...columns];
+        const indexColumnToAddCard = newColumns.findIndex(
+          (col) => col._id === newColumn._id
+        );
+        newColumns.splice(indexColumnToAddCard, 1, newColumn);
+        setColumns(newColumns);
 
-      let newColumns = [...columns];
-      const indexColumnToAddCard = newColumns.findIndex(
-        (col) => col._id === newColumn._id
-      );
-      newColumns.splice(indexColumnToAddCard, 1, newColumn);
-      setColumns(newColumns);
+        let newBoard = { ...board };
+        newBoard.columnOrder = newColumns.map((column) => column._id);
+        newBoard.columns = newColumns;
+        setBoard(newBoard);
 
-      let newBoard = { ...board };
-      newBoard.columnOrder = newColumns.map((column) => column._id);
-      newBoard.columns = newColumns;
-      setBoard(newBoard);
-
-      setNewCardTitle("");
-      setToggleAddNewCard(false);
+        setNewCardTitle("");
+        setToggleAddNewCard(false);
+      });
     }
   };
 
