@@ -20,7 +20,11 @@ export const updateColumnApi = async (id: string, data: any) => {
 };
 
 export const deleteColumnApi = async (id: string) => {
-  const request = await axios.delete(`${API_ROOT}/v1/columns/deleteColumn/${id}`);
+  const request = await axios.delete(
+    `${API_ROOT}/v1/columns/deleteColumn/${id}`
+  );
   console.log(request.data);
   return request.data;
 };
+
+

@@ -12,3 +12,13 @@ export const createCardApi = async (data: {
     console.log(request.data);
     return request.data;
   };
+
+  export const updateCardApi = async (id: string, data: any) => {
+    const request = await axios.put(
+      `${API_ROOT}/v1/cards/updateCard/${id}`,
+      data
+    );
+    console.log(request.data);
+    return request.data;
+  };
+  
