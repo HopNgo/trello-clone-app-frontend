@@ -8,8 +8,9 @@ import { applyDrag } from "utilities/dragDrop";
 import { mapOrder } from "utilities/sorts";
 import "./BoardContent.scss";
 import IColumn from "interface/ICoLumn";
-import { createColumnApi } from "api/columnApi";
-import { getBoardDetailApi } from "api/boardApi";
+import { createColumnApi, updateColumnApi } from "api/columnApi";
+import { getBoardDetailApi, updateBoardApi } from "api/boardApi";
+import { updateCardApi } from "api/cardApi";
 
 interface IColumnUpdate extends IColumn {
   _destroy?: Boolean;
@@ -56,21 +57,62 @@ const BoardContent = () => {
     let newBoard = { ...board };
     newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
+
     setColumns(newColumns);
     setBoard(newBoard);
+
+    //update columnOrder to server when drag & drop column
+    const data = {
+      columnOrder: newBoard.columnOrder,
+    };
+    updateBoardApi(newBoard._id, data).catch((error) => {
+      console.log(error);
+    });
   };
 
-  const onCardDrop = (CardResult: any, column_Id: string) => {
-    if (CardResult.removedIndex !== null || CardResult.addedIndex !== null) {
+  const onCardDrop = (CardResult: any, columnId: string) => {
+    if (
+      CardResult.removedIndex !== CardResult.addedIndex &&
+      (CardResult.removedIndex !== null || CardResult.addedIndex !== null)
+    ) {
       let newColumns = [...columns];
-      let currentColumn = newColumns.find((column) => column._id === column_Id);
+      let currentColumn = newColumns.find((column) => column._id === columnId);
       if (currentColumn) {
         currentColumn.cards = applyDrag(currentColumn?.cards, CardResult);
         currentColumn.cardOrder = currentColumn.cards.map((card) => card._id);
       }
+
+      if (CardResult.removedIndex !== null && CardResult.addedIndex !== null) {
+        //drag & drop card inside its column
+        //Call api update cardOrder field in collection columns
+        const data = {
+          cardOrder: currentColumn?.cardOrder,
+        };
+        updateColumnApi(columnId, data).catch((error) => {
+          console.log(error);
+        });
+      } else {
+        //drag card from this column and drop it to that column
+        //call api update cardOrder field in collection columns
+        const data = {
+          cardOrder: currentColumn?.cardOrder,
+        };
+        updateColumnApi(columnId, data).catch((error) => {
+          console.log(error);
+        });
+
+        //drag card from this column and drop it to that column
+        //call api update columnId field in card.
+        if (CardResult.addedIndex !== null) {
+          let currentCard = { ...CardResult.payload };
+          currentCard.columnId = currentColumn?._id;
+          updateCardApi(currentCard._id, currentCard).catch((error) =>
+            console.log(error)
+          );
+        }
+      }
+
       setColumns(newColumns);
-      console.log(board);
-      console.log(columns);
     }
   };
 
