@@ -1,4 +1,4 @@
-import { createCardApi } from "api/cardApi";
+import { createCardApi, updateDestroyCardsApi } from "api/cardApi";
 import { deleteColumnApi, updateColumnApi } from "api/columnApi";
 import CardItem from "components/CardItem/CardItem";
 import ConfirmModal from "components/Common/ComfirmModal";
@@ -101,7 +101,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
     }
   };
 
-  const handleAddNewCard = () => {
+  const handleAddNewCard = (): void => {
     if (!newCardTitle) {
       textareaAddCardRef?.current?.focus();
       return;
@@ -139,7 +139,15 @@ const CardColumn: React.FC<CardColumnProps> = ({
     }
   };
 
-  const handleClickRemoveAllCard = () => {
+  const handleClickRemoveAllCard = (): void => {
+    //Call api to set _destroy: true for all cards.
+    const data = {
+      columnId: column._id,
+      _destroy: true,
+    };
+    updateDestroyCardsApi(data).catch((error) => console.log(error));
+
+    //handle click to set columns, board frontend
     let newColumn = { ...column };
     newColumn.cards = [];
     newColumn.cardOrder = [];
@@ -158,6 +166,28 @@ const CardColumn: React.FC<CardColumnProps> = ({
     newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
     setBoard(newBoard);
+  };
+
+  const handleClickArchiveAllCard = (): void => {
+    const data: { columnId: string; _destroy: boolean } = {
+      columnId: column._id,
+      _destroy: false,
+    };
+    updateDestroyCardsApi(data)
+      .then((data) => {
+        let newColumns = [...columns];
+        const indexColumnToUpdate = newColumns.findIndex(
+          (column) => column._id === data._id
+        );
+        newColumns[indexColumnToUpdate] = data;
+        setColumns(newColumns);
+
+        let newBoard = { ...board };
+        newBoard.columnOrder = newColumns.map((column) => column._id);
+        newBoard.columns = newColumns;
+        setBoard(newBoard);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -197,7 +227,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
               <Dropdown.Item onClick={handleClickRemoveAllCard}>
                 Move all cards in this column (beta)
               </Dropdown.Item>
-              <Dropdown.Item href="#/action-3">
+              <Dropdown.Item onClick={handleClickArchiveAllCard}>
                 Archive all cards in this column (beta)
               </Dropdown.Item>
             </Dropdown.Menu>
