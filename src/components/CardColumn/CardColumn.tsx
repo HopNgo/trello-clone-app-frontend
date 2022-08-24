@@ -64,7 +64,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
     });
   }, [toggleAddNewCard]);
 
-  const onConfirmModalAction = (actionType: string) => {
+  const onConfirmModalActionRemoveColumn = (actionType: string) => {
     if (actionType === MODAL_ACTION_CLOSE) {
       setToggleModalRemoveColumn(false);
     }
@@ -220,7 +220,9 @@ const CardColumn: React.FC<CardColumnProps> = ({
                 Add Card...
               </Dropdown.Item>
               <Dropdown.Item
-                onClick={() => onConfirmModalAction(MODAL_ACTION_OPEN)}
+                onClick={() =>
+                  onConfirmModalActionRemoveColumn(MODAL_ACTION_OPEN)
+                }
               >
                 Remove Column...
               </Dropdown.Item>
@@ -249,7 +251,13 @@ const CardColumn: React.FC<CardColumnProps> = ({
         >
           {cards.map((card: ICard) => (
             <Draggable key={card._id}>
-              <CardItem card={card} />
+              <CardItem
+                card={card}
+                setColumns={setColumns}
+                setBoard={setBoard}
+                columns={columns}
+                board={board}
+              />
             </Draggable>
           ))}
         </Container>
@@ -298,7 +306,7 @@ const CardColumn: React.FC<CardColumnProps> = ({
 
       <ConfirmModal
         show={toggleModalRemoveColumn}
-        onAction={onConfirmModalAction}
+        onAction={onConfirmModalActionRemoveColumn}
         title="Remove Column"
         content={`Are you sure you want to remove <strong>${column.title}</strong> ? </br> All related cards will aslo be removed !!`}
       />
