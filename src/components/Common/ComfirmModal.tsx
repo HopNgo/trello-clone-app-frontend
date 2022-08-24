@@ -15,7 +15,7 @@ function ConfirmModal({ title, content, show, onAction }: any) {
       <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>{parse(content)}</Modal.Body>
+      <Modal.Body style={{ fontStyle: "italic" }}>{parse(content)}</Modal.Body>
       <Modal.Footer>
         <Button
           variant="secondary"

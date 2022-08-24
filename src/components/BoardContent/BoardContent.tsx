@@ -30,7 +30,7 @@ const BoardContent = () => {
     useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const boardId = "62fdec3023029563b79aab17";
+    const boardId: string = "62fdec3023029563b79aab17";
     getBoardDetailApi(boardId).then((board: IBoard) => {
       setBoard(board);
       setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
@@ -62,7 +62,7 @@ const BoardContent = () => {
     setBoard(newBoard);
 
     //update columnOrder to server when drag & drop column
-    const data = {
+    const data: { columnOrder: string[] } = {
       columnOrder: newBoard.columnOrder,
     };
     updateBoardApi(newBoard._id, data).catch((error) => {
@@ -75,8 +75,10 @@ const BoardContent = () => {
       CardResult.removedIndex !== CardResult.addedIndex &&
       (CardResult.removedIndex !== null || CardResult.addedIndex !== null)
     ) {
-      let newColumns = [...columns];
-      let currentColumn = newColumns.find((column) => column._id === columnId);
+      let newColumns: IColumn[] = [...columns];
+      let currentColumn: IColumn | undefined = newColumns.find(
+        (column) => column._id === columnId
+      );
       if (currentColumn) {
         currentColumn.cards = applyDrag(currentColumn?.cards, CardResult);
         currentColumn.cardOrder = currentColumn.cards.map((card) => card._id);
@@ -85,8 +87,8 @@ const BoardContent = () => {
       if (CardResult.removedIndex !== null && CardResult.addedIndex !== null) {
         //drag & drop card inside its column
         //Call api update cardOrder field in collection columns
-        const data = {
-          cardOrder: currentColumn?.cardOrder,
+        const data: { cardOrder: string[] } = {
+          cardOrder: currentColumn ? currentColumn?.cardOrder : [],
         };
         updateColumnApi(columnId, data).catch((error) => {
           console.log(error);
@@ -116,11 +118,11 @@ const BoardContent = () => {
     }
   };
 
-  const openFormAddNewColumn = () => {
+  const openFormAddNewColumn = (): void => {
     setToggleFormAddNewColumn(true);
   };
 
-  const closeFormAddNewColumn = () => {
+  const closeFormAddNewColumn = (): void => {
     setToggleFormAddNewColumn(false);
   };
 

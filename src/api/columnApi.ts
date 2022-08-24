@@ -1,11 +1,15 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import IColumn from "interface/ICoLumn";
 import { API_ROOT } from "utilities/constants";
 
 export const createColumnApi = async (data: {
   title: string;
   boardId: string;
 }) => {
-  const request = await axios.post(`${API_ROOT}/v1/columns/addColumn`, data);
+  const request: AxiosResponse<IColumn> = await axios.post(
+    `${API_ROOT}/v1/columns/addColumn`,
+    data
+  );
   console.log(request.data);
   return request.data;
 };
@@ -26,5 +30,3 @@ export const deleteColumnApi = async (id: string) => {
   console.log(request.data);
   return request.data;
 };
-
-
