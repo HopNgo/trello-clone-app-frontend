@@ -1,7 +1,48 @@
 @import "assets/variable.scss";
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap");
 
 .navbar-app {
   height: $navbar-app-height;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding-left: $gap;
   background-color: $appbar-bg-color;
+  position: relative;
+  .navbar-app-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .navbar-app-icon {
+      background-color: hsla(0, 0%, 100%, 0.24);
+      color: white;
+      font-size: 18px;
+      padding: 8px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      &:hover {
+        background-color: hsla(0, 0%, 100%, 0.34);
+      }
+    }
+    .input-board {
+      max-width: 300px;
+      min-width: 300px;
+      background-color: hsla(0, 0%, 100%, 0.34);
+      border: none;
+      min-height: 35px;
+      color: white;
+      &::placeholder {
+        color: white;
+      }
+    }
+  }
+  .navbar-app-trello {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 30px;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: "Dancing Script", cursive;
+  }
 }
