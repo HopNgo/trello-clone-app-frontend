@@ -1,24 +1,33 @@
-import { initialBoard } from "actions/initialBoard";
+import { updateBoardApi } from "api/boardApi";
+import { updateCardApi } from "api/cardApi";
+import { createColumnApi, updateColumnApi } from "api/columnApi";
 import CardColumn from "components/CardColumn/CardColumn";
 import IBoard from "interface/IBoard";
+import IColumn from "interface/ICoLumn";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag } from "utilities/dragDrop";
-import { mapOrder } from "utilities/sorts";
 import "./BoardContent.scss";
-import IColumn from "interface/ICoLumn";
-import { createColumnApi, updateColumnApi } from "api/columnApi";
-import { getBoardDetailApi, updateBoardApi } from "api/boardApi";
-import { updateCardApi } from "api/cardApi";
 
 interface IColumnUpdate extends IColumn {
   _destroy?: Boolean;
 }
 
-const BoardContent = () => {
-  const [board, setBoard] = useState<IBoard>(initialBoard);
-  const [columns, setColumns] = useState<IColumn[]>([]);
+interface BoardContentProps {
+  board: IBoard;
+  setBoard: Function;
+  columns: IColumn[];
+  setColumns: Function;
+}
+
+const BoardContent: React.FC<BoardContentProps> = ({
+  board,
+  setBoard,
+  columns,
+  setColumns,
+}) => {
+  
   const [toggleFormAddNewColumn, setToggleFormAddNewColumn] =
     useState<Boolean>(false);
   const inputNewColumnRef = useRef<HTMLInputElement>(null);
@@ -28,14 +37,6 @@ const BoardContent = () => {
 
   const addNewColumnRef: React.RefObject<HTMLDivElement> =
     useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const boardId: string = "62fdec3023029563b79aab17";
-    getBoardDetailApi(boardId).then((board: IBoard) => {
-      setBoard(board);
-      setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
-    });
-  }, []);
 
   useEffect(() => {
     if (inputNewColumnRef && inputNewColumnRef.current) {
@@ -173,7 +174,7 @@ const BoardContent = () => {
   if (board === undefined) {
     return <div className="">Board Not found</div>;
   }
-
+ 
   return (
     <div className="board-content">
       <Container

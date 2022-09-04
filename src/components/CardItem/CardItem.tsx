@@ -1,9 +1,10 @@
 import { updateCardApi } from "api/cardApi";
+import autosize from "autosize";
 import ConfirmModal from "components/Common/ComfirmModal";
 import IBoard from "interface/IBoard";
 import ICard from "interface/ICard";
 import IColumn from "interface/ICoLumn";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import {
   MODAL_ACTION_CLOSE,
@@ -27,15 +28,12 @@ const CardItem: React.FC<CardItemProps> = ({
   columns,
   board,
 }) => {
+  useEffect(() => {
+    autosize(document.querySelectorAll(".card-title-editable"));
+  }, []);
+
   const [editCardTitle, setEditCardTitle] = useState<string>(card.title);
   const [toggleRemoveCard, setToggleRemoveCard] = useState<boolean>(false);
-
-  const saveTitleCardAfterPressEnter = (e: any) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      e.target.blur();
-    }
-  };
 
   const selectAllInlineText = (e: any) => {
     e.target.focus();
@@ -70,9 +68,11 @@ const CardItem: React.FC<CardItemProps> = ({
     updateCardApi(newCard._id, newCard).catch((error) => console.log(error));
   };
 
-  const resizeTextarea = (e: any) => {
-    e.target.style.height = "24px";
-    e.target.style.height = e.target.scrollHeight + 2 + "px";
+  const saveTitleCardAfterPressEnter = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.target.blur();
+    }
   };
 
   const onConfirmModalActionRemoveCard = (typeAction: string) => {
@@ -117,35 +117,38 @@ const CardItem: React.FC<CardItemProps> = ({
 
   return (
     <li className="card-item">
-      <div className="card-item-content">
-        {card.cover && (
+      {card.cover && (
+        <div className="card-item__img">
           <img
             src={card.cover}
             onMouseDown={(e) => e.preventDefault()}
             alt="img-drop"
           />
-        )}
-        <Form.Control
-          type="text"
-          size="sm"
-          as={"textarea"}
-          rows={1}
-          className="card-title-editable"
-          value={editCardTitle}
-          onInput={resizeTextarea}
-          onChange={(e) => setEditCardTitle(e.target.value)}
-          onKeyDown={saveTitleCardAfterPressEnter}
-          onClick={selectAllInlineText}
-          onMouseDown={(e: any) => e.preventDefault()}
-          spellCheck={false}
-          onBlur={handleSaveTitleCardAfterBlur}
-        />
-      </div>
-      <div
-        className="card-item-action"
-        onClick={() => onConfirmModalActionRemoveCard(MODAL_ACTION_OPEN)}
-      >
-        &times;
+        </div>
+      )}
+      <div className="card-item-contentAndAction">
+        <div className="card-item-content">
+          <Form.Control
+            type="text"
+            size="sm"
+            as={"textarea"}
+            rows={1}
+            className="card-title-editable"
+            value={editCardTitle}
+            onChange={(e) => setEditCardTitle(e.target.value)}
+            onKeyDown={saveTitleCardAfterPressEnter}
+            onClick={selectAllInlineText}
+            onMouseDown={(e: any) => e.preventDefault()}
+            spellCheck={false}
+            onBlur={handleSaveTitleCardAfterBlur}
+          />
+        </div>
+        <div
+          className="card-item-action"
+          onClick={() => onConfirmModalActionRemoveCard(MODAL_ACTION_OPEN)}
+        >
+          &times;
+        </div>
       </div>
       <ConfirmModal
         title="Remove Card"

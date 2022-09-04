@@ -1,0 +1,7 @@
+@import "../../assets/variable.scss";
+.work-page {
+  &__loading {
+    height: $board-content-height + $navbar-board-height;
+    background-color: $board-bg-color;
+  }
+}

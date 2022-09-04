@@ -1,8 +1,12 @@
 import React from "react";
 import "./BoardBar.scss";
 
-const BoardBar = () => {
-  return <nav className="navbar-board">Board Bar</nav>;
+interface BoardBarProps {
+  title: string;
+}
+
+const BoardBar: React.FC<BoardBarProps> = ({ title }) => {
+  return <nav className="navbar-board">{title}</nav>;
 };
 
 export default BoardBar;

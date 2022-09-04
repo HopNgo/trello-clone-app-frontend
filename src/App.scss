@@ -1,20 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap");
 @import "assets/variable.scss";
 
-
 body {
   cursor: default;
   margin: 0;
   border: 0;
   padding: 0;
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Source Sans Pro", sans-serif !important;
   box-sizing: border-box;
   width: 100%;
 }
 
 .App {
-  background-color: $board-bg-color;
   color: $main-text-color;
+
+  .loading-dots {
+    height: $board-content-height;
+    background-color: $board-bg-color;
+  }
   .icon {
     font-size: 14px;
   }

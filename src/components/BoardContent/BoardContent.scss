@@ -4,9 +4,9 @@
   height: $board-content-height;
   display: flex;
   align-items: flex-start;
-  padding-top: 10px;
   gap: 0 20px;
   overflow-y: auto;
+  background-color: $board-bg-color;
   &::-webkit-scrollbar {
     -webkit-appearance: none;
   }

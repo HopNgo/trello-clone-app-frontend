@@ -1,14 +1,21 @@
-import React from "react";
-import "./App.scss";
 import AppBar from "components/AppBar/AppBar";
-import BoardBar from "components/BoardBar/BoardBar";
-import BoardContent from "components/BoardContent/BoardContent";
-
+import BoardPage from "page/BoardPage/BoardPage";
+import WelcomePage from "page/WelcomePage/WelcomePage";
+import WorkPage from "page/WorkPage/WorkPage";
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.scss";
 function App() {
   return (
     <div className="App">
-      <AppBar />
-      <BoardContent />
+      <BrowserRouter>
+        <AppBar />
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path={"/boards"} element={<BoardPage />} />
+          <Route path={"/boards/:boardId"} element={<WorkPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

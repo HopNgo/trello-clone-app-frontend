@@ -4,6 +4,10 @@ export const initialBoard: IBoard = {
   _id: "",
   columnOrder: [""],
   title: "",
+  cover: "",
+  createdAt: 0,
+  updatedAt: 0,
+  _destroy: false,
   columns: [
     {
       _id: "",

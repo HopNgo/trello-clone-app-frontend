@@ -7,7 +7,7 @@ import ICard from "interface/ICard";
 import IColumn from "interface/ICoLumn";
 import { cloneDeep } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Dropdown, Form } from "react-bootstrap";
+import { Button, Dropdown, Form, Spinner } from "react-bootstrap";
 import { Container, Draggable } from "react-smooth-dnd";
 import {
   MODAL_ACTION_CLOSE,
@@ -40,6 +40,8 @@ const CardColumn: React.FC<CardColumnProps> = ({
     ? mapOrder(column.cards, column.cardOrder, "_id")
     : [];
 
+  console.log(columns, board);
+
   const [toggleModalRemoveColumn, setToggleModalRemoveColumn] =
     useState<Boolean>(false);
 
@@ -47,9 +49,14 @@ const CardColumn: React.FC<CardColumnProps> = ({
 
   const [toggleAddNewCard, setToggleAddNewCard] = useState<Boolean>(false);
 
+  const [loadingAddCard, setLoadingAddCard] = useState<Boolean>(false);
+
   const textareaAddCardRef = useRef<HTMLTextAreaElement>(null);
 
   const [newCardTitle, setNewCardTitle] = useState<string>("");
+
+  const [photoCard, setPhotoCard] = useState<File | null>(null);
+  console.log(photoCard);
 
   const formAddNewCardRef: React.RefObject<HTMLDivElement> =
     useRef<HTMLDivElement>(null);
@@ -101,22 +108,31 @@ const CardColumn: React.FC<CardColumnProps> = ({
     }
   };
 
-  const handleAddNewCard = (): void => {
+  const handleAddNewCard = async () => {
     if (!newCardTitle) {
       textareaAddCardRef?.current?.focus();
       return;
     } else {
+      setLoadingAddCard(true);
       const newCardDataAdded: {
         boardId: string;
         title: string;
         columnId: string;
-        cover?: string;
+        cover?: any;
       } = {
         boardId: column.boardId,
         title: newCardTitle.trim(),
         columnId: column._id,
+        cover: photoCard,
       };
-      createCardApi(newCardDataAdded).then((card: ICard) => {
+      const formData: FormData = new FormData();
+
+      formData.append("title", newCardDataAdded.title);
+      formData.append("boardId", newCardDataAdded.boardId);
+      formData.append("columnId", newCardDataAdded.columnId);
+      formData.append("cover", newCardDataAdded.cover);
+
+      await createCardApi(formData).then((card: ICard) => {
         let newColumn = cloneDeep(column);
         newColumn.cards.push(card);
         newColumn.cardOrder.push(card._id);
@@ -133,7 +149,9 @@ const CardColumn: React.FC<CardColumnProps> = ({
         newBoard.columns = newColumns;
         setBoard(newBoard);
 
+        setLoadingAddCard(false);
         setNewCardTitle("");
+        setPhotoCard(null);
         setToggleAddNewCard(false);
       });
     }
@@ -263,16 +281,36 @@ const CardColumn: React.FC<CardColumnProps> = ({
         </Container>
         {toggleAddNewCard && (
           <div className="form-add-new-card" ref={formAddNewCardRef}>
+            <div className="form-add-new-card__photo">
+              {photoCard && (
+                <img alt="Not Found" src={URL.createObjectURL(photoCard)} />
+              )}
+            </div>
+
             <div className="input">
               <Form.Control
                 ref={textareaAddCardRef}
-                rows={3}
+                rows={2}
                 as="textarea"
                 size="sm"
                 placeholder="Enter title card ..."
                 className="textarea-card"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
+              />
+            </div>
+            <div className="form-add-new-card__upload">
+              <Form.Label htmlFor="file" className="label-file">
+                Upload
+              </Form.Label>
+              <Form.Control
+                id="file"
+                size="sm"
+                className="input-file"
+                type="file"
+                name="cover"
+                accept=".jpg,.png"
+                onChange={(e: any) => setPhotoCard(e.target.files[0])}
               />
             </div>
             <div className="btn-and-cancel">
@@ -282,11 +320,17 @@ const CardColumn: React.FC<CardColumnProps> = ({
                 className="btn"
                 onClick={handleAddNewCard}
               >
+                {loadingAddCard && (
+                  <Spinner animation="border" variant="light" size="sm" />
+                )}
                 Add Card
               </Button>
               <i
                 className="fa fa-trash cancel"
-                onClick={() => setToggleAddNewCard(false)}
+                onClick={() => {
+                  setToggleAddNewCard(false);
+                  setPhotoCard(null);
+                }}
               ></i>
             </div>
           </div>
