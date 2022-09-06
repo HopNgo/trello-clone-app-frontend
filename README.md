@@ -8,6 +8,13 @@
 \*\*yarn > v1.19.1
 ```
 
+## Deploy
+
+```
+Link : https://trello-clone-ngo-hop.netlify.app/
+
+```
+
 ## Clone project and run test
 
 ```
