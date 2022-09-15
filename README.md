@@ -15,6 +15,13 @@ Link : https://trello-clone-ngo-hop.netlify.app/
 
 ```
 
+## Backend Git
+
+```
+Link : https://github.com/HopNgo/trello-clone-app-backend.git
+
+```
+
 ## Clone project and run test
 
 ```
