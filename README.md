@@ -47,4 +47,9 @@ $ "typescript": "^4.7.4"
 
 ```
 
+## Contact
+
+#### Gmail: ngoxuanhop254@gmail.com
+#### Phone : +84 357903961
+
 ### Thank you for watching !!!
