@@ -8,7 +8,7 @@
 
 ## Deploy
 
-Demo : (https://trello-clone-ngo-hop.netlify.app/).
+Demo : https://trello-clone-ngo-hop.netlify.app/
 
 ## Backend Git
 
